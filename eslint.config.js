@@ -8,5 +8,10 @@ export default antfu({
     '**/*.md',
     '**/*.yaml',
     '**/*.yml',
+    'node_modules',
+    '.yarn',
+    '.eslintrc.js',
+    'vite.config.ts',
+    'dist',
   ],
 })
