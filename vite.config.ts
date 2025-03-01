@@ -1,21 +1,26 @@
-import process from 'node:process'
+import { stylex } from '@stylex-extend/vite'
 import vue from '@vitejs/plugin-vue'
-import UnoCSS from 'unocss/vite'
+import VueMacros from 'unplugin-vue-macros/vite'
 import { defineConfig } from 'vite'
+import { analyzer } from 'vite-bundle-analyzer'
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: process.env.NODE_ENV === 'development'
-    ? [
-        vue({ features: {
-          // customElement: true,
-          optionsAPI: false,
-        } }),
-        UnoCSS({
-          // mode: 'shadow-dom',
+  plugins: [
+    VueMacros({
+      defineStyleX: true,
+      plugins: {
+        vue: vue({
+          features: {
+            // customElement: true,
+            optionsAPI: false,
+          },
         }),
-      ]
-    : [],
+      },
+    }),
+    stylex(),
+    analyzer({ defaultSizes: 'parsed' }),
+  ],
   server: {
     proxy: {
       '/api': {
@@ -26,5 +31,6 @@ export default defineConfig({
   },
   build: {
     cssMinify: 'lightningcss',
+    sourcemap: true,
   },
 })

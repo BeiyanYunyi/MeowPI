@@ -1,6 +1,6 @@
 import { createApp } from 'vue'
 import app from './App.vue'
-import '@unocss/reset/tailwind.css'
+import 'virtual:stylex.css'
 
 createApp(app).mount('#app')
 

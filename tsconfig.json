@@ -12,7 +12,8 @@
     "moduleResolution": "Bundler",
     "resolveJsonModule": true,
     "types": [
-      "vite/client"
+      "vite/client",
+      "unplugin-vue-macros/macros-global"
     ],
     "strict": true,
     "strictNullChecks": true,
@@ -36,5 +37,8 @@
   "exclude": [
     "dist",
     "node_modules"
-  ]
+  ],
+  "vueCompilerOptions": {
+    "plugins": ["unplugin-vue-macros/volar"]
+  }
 }

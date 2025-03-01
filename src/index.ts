@@ -1,4 +1,4 @@
 import App from './App.vue'
-import 'uno.css'
+import 'virtual:stylex.css'
 
 export default App

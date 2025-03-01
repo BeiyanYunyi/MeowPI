@@ -11,7 +11,6 @@ export default antfu({
     'node_modules',
     '.yarn',
     '.eslintrc.js',
-    'vite.config.ts',
     'dist',
   ],
 })
