@@ -1,8 +1,9 @@
 import { stylex } from '@stylex-extend/vite'
 import vue from '@vitejs/plugin-vue'
 import VueMacros from 'unplugin-vue-macros/vite'
+import VueRouter from 'unplugin-vue-router/vite'
 import { defineConfig } from 'vite'
-import { analyzer } from 'vite-bundle-analyzer'
+// import { analyzer } from 'vite-bundle-analyzer'
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -16,10 +17,11 @@ export default defineConfig({
             optionsAPI: false,
           },
         }),
+        vueRouter: VueRouter(),
       },
     }),
     stylex(),
-    analyzer({ defaultSizes: 'parsed' }),
+    // analyzer({ defaultSizes: 'parsed' }),
   ],
   server: {
     proxy: {

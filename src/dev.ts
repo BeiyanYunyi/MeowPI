@@ -1,8 +1,16 @@
 import { createApp } from 'vue'
+import { createRouter, createWebHistory } from 'vue-router'
+import { handleHotUpdate, routes } from 'vue-router/auto-routes'
 import app from './App.vue'
 import 'virtual:stylex.css'
 
-createApp(app).mount('#app')
+const router = createRouter({ history: createWebHistory(), routes })
+
+createApp(app).use(router).mount('#app')
+
+if (import.meta.hot) {
+  handleHotUpdate(router)
+}
 
 // import 'virtual:uno.css'
 
