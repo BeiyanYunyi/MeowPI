@@ -26,7 +26,7 @@ Prefer Vue SFCs for UI and TypeScript modules for data/utilities. Name Vue compo
 
 ## Testing Guidelines
 
-There is no dedicated automated test suite checked in yet. Until one is added, treat `pnpm build` and `pnpm preview` as the minimum verification path, and document any manual checks in your PR. When adding tests, place them beside the feature or under a top-level `tests/` directory using `*.test.ts` naming.
+Automated tests now live under the top-level `tests/` directory using `*.test.ts` naming. Even with test coverage in place, treat `pnpm build` as the required smoke test before submitting changes. Document the checks you ran in your PR.
 
 ## Commit & Pull Request Guidelines
 

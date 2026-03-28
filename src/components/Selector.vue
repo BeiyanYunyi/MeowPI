@@ -34,7 +34,7 @@ const { isDragging, x, position } = useDraggable(el, {
     else if (endPosition.x >= SWIPE_THRESHOLD)
       model.value = false
     else
-      model.value = undefined
+      model.value = null
 
     if (endPosition.x !== 0)
       // Reset after release so CSS can animate the snap-back.
