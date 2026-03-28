@@ -10,10 +10,13 @@
     "useDefineForClassFields": true,
     "module": "ESNext",
     "moduleResolution": "Bundler",
+    "paths": {
+      "#/*": ["./src/*"]
+    },
     "resolveJsonModule": true,
     "types": [
       "vite/client",
-      "unplugin-vue-macros/macros-global"
+      "vue-macros/macros-global"
     ],
     "strict": true,
     "strictNullChecks": true,
@@ -40,6 +43,6 @@
     "node_modules"
   ],
   "vueCompilerOptions": {
-    "plugins": ["unplugin-vue-macros/volar"]
+    "plugins": ["vue-macros/volar"]
   }
 }

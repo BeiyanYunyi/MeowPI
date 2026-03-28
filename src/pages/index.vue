@@ -1,7 +1,7 @@
 <script setup lang="ts">
+import Selector from '#/components/Selector.vue'
+import { question } from '#/data'
 import { ref } from 'vue'
-import Selector from '../components/Selector.vue'
-import { question } from '../data'
 
 const styles = defineStyleX({ form: { overflowX: 'hidden', maxWidth: '100vw' } })
 const val = ref<(boolean | null)[]>(question.map(_ => null))
