@@ -31,3 +31,4 @@ dist-ssr
 .env*
 !.env.example
 typed-router.d.ts
+.agents
