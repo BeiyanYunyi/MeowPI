@@ -2,7 +2,7 @@
 import { useDraggable } from '@vueuse/core'
 import { computed, useTemplateRef } from 'vue'
 
-defineProps<{ question: string, num: number }>()
+defineProps<{ question: string, num: number, assignedGender?: boolean }>()
 
 const SWIPE_THRESHOLD = 32
 
@@ -57,7 +57,7 @@ const fieldsetStyle = computed(() => ({
     <legend>{{ question }}</legend>
     <label v-stylex="styles.option">
       <input v-model="model" type="radio" :name="num.toString()" :value="true">
-      是
+      {{ assignedGender ? '男' : '是' }}
     </label>
     <label v-stylex="styles.option">
       <input v-model="model" type="radio" :name="num.toString()" :value="null">
@@ -65,7 +65,7 @@ const fieldsetStyle = computed(() => ({
     </label>
     <label v-stylex="styles.option">
       <input v-model="model" type="radio" :name="num.toString()" :value="false">
-      否
+      {{ assignedGender ? '女' : '否' }}
     </label>
   </fieldset>
 </template>

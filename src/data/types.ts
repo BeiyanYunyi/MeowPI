@@ -52,3 +52,9 @@ export interface AnalyzeScoreResult {
   clinical: ScoreSeries<'Hs-1' | 'D-2' | 'Hy-3' | 'Pd-4' | 'Mf-5' | 'Pa-6' | 'Pt-7' | 'Sc-8' | 'Ma-9' | 'Si-0'>
   extra: ScoreSeries<AdditionalScaleKey>
 }
+
+export interface ResultPagePayload {
+  gender: Gender
+  calculateScoreResult: CalculateScoreResult
+  analyzeScoreResult: AnalyzeScoreResult
+}

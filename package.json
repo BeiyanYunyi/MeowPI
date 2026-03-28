@@ -48,6 +48,8 @@
     "test": "pnpm exec tsx --test tests/**/*.test.ts"
   },
   "dependencies": {
+    "d3": "^7.9.0",
+    "fflate": "^0.8.2",
     "vue": "^3.5.31",
     "vue-router": "^5.0.4"
   },
@@ -91,7 +93,8 @@
       "object.entries": "npm:@nolyfill/object.entries@^1",
       "object.fromentries": "npm:@nolyfill/object.fromentries@^1",
       "object.groupby": "npm:@nolyfill/object.groupby@^1",
-      "object.values": "npm:@nolyfill/object.values@^1"
+      "object.values": "npm:@nolyfill/object.values@^1",
+      "safer-buffer": "npm:@nolyfill/safer-buffer@^1"
     },
     "onlyBuiltDependencies": [
       "esbuild",
