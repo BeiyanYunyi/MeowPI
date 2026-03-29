@@ -1,5 +1,6 @@
 import { dirname, resolve } from 'node:path'
 import { fileURLToPath, pathToFileURL } from 'node:url'
+import { cloudflare } from '@cloudflare/vite-plugin'
 import stylex from '@stylexjs/unplugin/vite'
 import vue from '@vitejs/plugin-vue'
 import { defineConfig } from 'vite'
@@ -30,13 +31,14 @@ export default defineConfig({
       plugins: {
         vue: vue({
           features: {
-            // customElement: true,
+          // customElement: true,
             optionsAPI: false,
           },
         }),
         vueRouter: VueRouter(),
       },
     }),
+    // analyzer({ defaultSizes: 'parsed' }),
     stylex({
       useCSSLayers: true,
       unstable_moduleResolution: {
@@ -56,7 +58,7 @@ export default defineConfig({
         },
       },
     }),
-    // analyzer({ defaultSizes: 'parsed' }),
+    cloudflare(),
   ],
   server: {
     proxy: {
