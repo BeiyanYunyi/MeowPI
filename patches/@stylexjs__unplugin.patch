@@ -1,0 +1,21 @@
+diff --git a/lib/es/core.mjs b/lib/es/core.mjs
+index 13e21d1138b67b521e3a3b4610a7204e772767e9..fbd1b6a202119723ee43a108ce2ca49b95935e46 100644
+--- a/lib/es/core.mjs
++++ b/lib/es/core.mjs
+@@ -323,14 +323,14 @@ export const unpluginFactory = (userOptions = {}, metaOptions) => {
+       } catch {}
+       return true;
+     },
+-    enforce: 'pre',
++    // enforce: 'pre',
+     buildStart() {
+       resetState();
+     },
+     buildEnd() {},
+     async transform(code, id) {
+       const JS_LIKE_RE = /\.[cm]?[jt]sx?(\?|$)/;
+-      if (!JS_LIKE_RE.test(id)) return null;
++      if (!JS_LIKE_RE.test(id) && !id.endsWith('.vue')) return null;
+       if (!shouldHandle(code)) return null;
+       const dir = path.dirname(id);
+       const basename = path.basename(id);

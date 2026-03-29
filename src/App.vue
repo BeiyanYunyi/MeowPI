@@ -6,3 +6,8 @@
     <RouterView />
   </main>
 </template>
+
+<style>
+.dummy-class-for-generating-css {
+}
+</style>
