@@ -5,7 +5,7 @@ import type {
   ResultPagePayload,
 } from '#/data'
 import { decodeResultPayload } from '#/utils/resultPayload'
-import * as d3 from 'd3'
+import { axisBottom, axisLeft, line, range, scaleLinear, scalePoint, select } from 'd3'
 import { computed, useTemplateRef, watch } from 'vue'
 import { useRoute } from 'vue-router'
 
@@ -153,7 +153,7 @@ watch(
       return
     }
 
-    const svg = d3.select(svgElement)
+    const svg = select(svgElement)
     svg.selectAll('*').remove()
 
     if (!points.length) {
@@ -172,11 +172,11 @@ watch(
       .attr('aria-label', 'MMPI profile chart')
 
     const root = svg.append('g').attr('transform', `translate(${margin.left}, ${margin.top})`)
-    const x = d3.scalePoint()
+    const x = scalePoint()
       .domain(points.map(point => point.key))
       .range([0, innerWidth])
       .padding(0.45)
-    const y = d3.scaleLinear()
+    const y = scaleLinear()
       .domain([0, 120])
       .range([innerHeight, 0])
 
@@ -219,7 +219,7 @@ watch(
       .attr('fill', 'none')
       .attr('stroke', '#22577a')
       .attr('stroke-width', 2.5)
-      .attr('d', d3.line()
+      .attr('d', line<ChartDatum>()
         .x((point: ChartDatum) => x(point.key) ?? 0)
         .y((point: ChartDatum) => y(point.value)))
 
@@ -253,21 +253,21 @@ watch(
       .text((point: { label: string }) => point.label)
 
     root.append('g')
-      .call(d3.axisLeft(y).tickValues(d3.range(0, 121, 10)))
+      .call(axisLeft(y).tickValues(range(0, 121, 10)))
       .call((axis: any) => axis.select('.domain').attr('stroke', '#23201c'))
       .call((axis: any) => axis.selectAll('.tick line').attr('stroke', '#d9cdbb'))
 
     const xAxis = root.append('g')
       .attr('transform', `translate(0, ${innerHeight})`)
-      .call(d3.axisBottom(x).tickSize(0))
+      .call(axisBottom(x).tickSize(0))
 
     xAxis.select('.domain').attr('stroke', '#23201c')
     xAxis.selectAll('.tick text')
       .attr('fill', '#23201c')
       .attr('font-size', 12)
-      .each(function renderLabel(this: SVGTextElement, pointKey: string) {
+      .each(function renderLabel(this, pointKey) {
         const label = points.find(point => point.key === pointKey)?.label ?? String(pointKey)
-        const text = d3.select(this)
+        const text = select(this)
         const segments = label.split('\n')
         text.text('')
         segments.forEach((segment, index) => {
