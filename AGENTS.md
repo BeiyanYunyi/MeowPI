@@ -20,7 +20,7 @@ Use `pnpm` for all local work.
 
 ## Coding Style & Naming Conventions
 
-Formatting is defined in [`.prettierrc.toml`](/Users/beiyanyunyi/projects/MeowPI/.prettierrc.toml): 2-space indentation, semicolons, single quotes, trailing commas, and 100-column wrapping. ESLint uses `@antfu/eslint-config` with Vue and UnoCSS support, so fix lint issues before opening a PR.
+Formatting is defined in [`.prettierrc.toml`](/Users/beiyanyunyi/projects/MeowPI/.prettierrc.toml): 2-space indentation, semicolons, single quotes, trailing commas, and 100-column wrapping. ESLint uses `@antfu/eslint-config` with Vue support, so fix lint issues before opening a PR.
 
 Prefer Vue SFCs for UI and TypeScript modules for data/utilities. Name Vue components in `PascalCase` (`Selector.vue`), utility files in `camelCase` (`createContext.ts`), and keep data modules descriptive (`question.ts`, `scales.ts`).
 

@@ -1,12 +1,8 @@
 import antfu from '@antfu/eslint-config'
 
 export default antfu({
-  unocss: true,
   vue: true,
-  formatters: {
-    css: true,
-    html: true,
-  },
+  formatters: true,
   test: {
     overrides: {
       'test/no-import-node-test': 'off',
