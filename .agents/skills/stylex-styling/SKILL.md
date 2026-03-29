@@ -13,6 +13,7 @@ This project uses StyleX for all styling. The system has three layers: **design 
 | ------------------------------------------------------ | ----------------------------- | ----------------------------------------------- |
 | Single-property styling (color, spacing, font, border) | `defineStyleX`               | `color: #123456`                         |
 | Pseudo-selectors (hover, focus)                        | `defineStyleX`               | `{ default: val, ":hover": hoverVal }`          |
+| Responsive behavior                                    | `defineStylex` + breakpoints | `{ default: "none", [breakpoints.md]: "flex" }` |
 
 ## Custom `v-stylex` Prop
 
@@ -25,6 +26,22 @@ Use `v-stylex="styles.foo"` instead of `{...stylex.attrs(styles.foo)}`. This is 
 // Composed — array of styles, primitives, and conditionals
 <div v-stylex="[flex.row, styles.header, isActive && styles.active]">
 ```
+
+## Breakpoints
+
+Import from `#/breakpoints.stylex.ts`. Values: `sm` (320px), `md` (768px), `lg` (1080px), `xl` (2000px).
+
+```tsx
+import { breakpoints } from "#/breakpoints.stylex";
+
+const styles = stylex.create({
+  grid: {
+    display: { default: "none", [breakpoints.md]: "grid" },
+    gridTemplateColumns: { default: "1fr", [breakpoints.lg]: "repeat(3, 1fr)" },
+  },
+});
+```
+
 
 ## Example usage
 
