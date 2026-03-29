@@ -27,11 +27,25 @@ Use `v-stylex="styles.foo"` instead of `{...stylex.attrs(styles.foo)}`. This is 
 <div v-stylex="[flex.row, styles.header, isActive && styles.active]">
 ```
 
+## Design Tokens
+
+Import from `#/tokens.stylex.ts`. Tokens include colors, spacing, typography, and more. Example:
+
+```ts
+import { colors, spacing } from "#/tokens.stylex";
+
+const styles = stylex.create({
+  card: {
+    backgroundColor: colors.surface,
+  },
+});
+```
+
 ## Breakpoints
 
 Import from `#/breakpoints.stylex.ts`. Values: `sm` (320px), `md` (768px), `lg` (1080px), `xl` (2000px).
 
-```tsx
+```ts
 import { breakpoints } from "#/breakpoints.stylex";
 
 const styles = stylex.create({
@@ -41,7 +55,6 @@ const styles = stylex.create({
   },
 });
 ```
-
 
 ## Example usage
 
