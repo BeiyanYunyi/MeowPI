@@ -23,10 +23,8 @@ const dragOffsetX = shallowRef(0)
 
 const styles = defineStyleX({
   card: {
-    position: 'relative',
     inlineSize: '100%',
     maxInlineSize: '720px',
-    marginInline: 'auto',
     borderRadius: radius.lg,
     borderWidth: '1px',
     borderStyle: 'solid',
@@ -36,10 +34,8 @@ const styles = defineStyleX({
     paddingBlock: spacing.xl,
     paddingInline: spacing.lg,
     userSelect: 'none',
-    touchAction: 'pan-y',
-    outlineWidth: '0',
-    outlineStyle: 'none',
-    outlineColor: 'transparent',
+    touchAction: 'none',
+    outline: 'none',
   },
   meta: {
     display: 'flex',
@@ -64,7 +60,7 @@ const styles = defineStyleX({
   },
   options: {
     display: 'grid',
-    gridTemplateColumns: '1fr 1fr 1fr',
+    gridTemplateColumns: '1fr 0.8fr 1fr',
     gap: spacing.md,
     marginBlockEnd: spacing.lg,
   },

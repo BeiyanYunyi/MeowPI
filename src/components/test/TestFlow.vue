@@ -92,9 +92,7 @@ const styles = defineStyleX({
     alignItems: 'center',
     flexDirection: 'column',
     gap: spacing.xxs,
-    outlineWidth: '0',
-    outlineStyle: 'none',
-    outlineColor: 'transparent',
+    outline: 'none',
   },
   controls: {
     display: 'flex',
@@ -131,9 +129,7 @@ const styles = defineStyleX({
   primaryButton: {
     backgroundColor: colors.textPrimary,
     color: colors.surfaceStrong,
-    borderWidth: '0',
-    borderStyle: 'none',
-    borderColor: 'transparent',
+    border: 'none',
   },
   buttonDisabled: {
     opacity: '0.38',
