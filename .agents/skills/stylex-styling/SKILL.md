@@ -1,6 +1,6 @@
 ---
 name: stylex-styling
-description: StyleX styling system with project-specific design tokens, composable primitives, and custom v-stylex prop. MUST consult this skill before writing or modifying ANY styles in this project — the codebase uses custom design tokens, flex primitives, motion presets, and a v-stylex prop that differs from standard StyleX. Trigger whenever the user asks to create components, modify visual appearance, fix spacing/layout, add hover/focus effects, animations, responsive behavior, or anything involving CSS, styling, design tokens, breakpoints, or the v-stylex prop.
+description: StyleX styling system with project-specific design tokens, composable primitives, and custom v-stylex prop. MUST consult this skill before writing or modifying ANY styles in this project — the codebase uses custom design tokens, flex primitives, motion presets, and a v-stylex prop that differs from standard StyleX. Trigger whenever the user asks to create components, modify visual appearance, fix spacing/layout, add hover/focus effects, animations, responsive behavior, or anything involving CSS, styling, design tokens, breakpoints, defineStyleX or the v-stylex prop.
 ---
 
 # StyleX Styling
@@ -58,11 +58,13 @@ const styles = stylex.create({
 
 ## Forbid shorthand properties
 
-Shorthand properties (e.g. `border`, `outline`) are forbidden. Always use longhand properties (`borderWidth`, `borderStyle`, `borderColor`) to make sure StyleX can handle them correctly. For example, instead of:
+Shorthand properties (e.g. `border`, `outline`, `margin`, `padding`) are forbidden. MUST use longhand properties (`borderWidth`, `borderStyle`, `borderColor`) to make sure StyleX can handle them correctly. But if a single value applies to all sides, it SHOULD be kept in the shorthand. For example, instead of:
 
 ```ts
 {
   border: `1px solid ${colors.borderSoft}`,
+  margin: '16px',
+  padding: '8px 16px',
 }
 ```
 
@@ -73,6 +75,9 @@ Use:
   borderWidth: '1px',
   borderStyle: 'solid',
   borderColor: colors.borderSoft,
+  margin: '16px', // if a single value applies to all sides, it's fine to use the shorthand
+  paddingBlock: '8px', // as there are different values for block and inline, we need to use longhand properties
+  paddingInline: '16px',
 }
 ```
 
