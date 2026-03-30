@@ -41,6 +41,7 @@ export default defineConfig({
     // analyzer({ defaultSizes: 'parsed' }),
     stylex({
       useCSSLayers: true,
+      lightningcssOptions: { minify: true },
       unstable_moduleResolution: {
         type: 'custom',
         filePathResolver: (importPath, sourceFilePath) => {
