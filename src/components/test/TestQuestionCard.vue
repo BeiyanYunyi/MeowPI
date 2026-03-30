@@ -237,7 +237,7 @@ const answerStatus = computed(() => {
     </div>
     <div v-stylex="styles.footer">
       <p v-stylex="styles.helper">
-        左滑选 {{ positiveLabel }}，右滑选 {{ negativeLabel }}，也可以直接点击或使用方向键。
+        左滑选{{ negativeLabel }}，右滑选{{ positiveLabel }}，也可以直接点击或使用方向键。
       </p>
       <button v-stylex="styles.clear" type="button" @click="emit('clear')">
         清除
