@@ -111,10 +111,10 @@ const styles = defineStyleX({
       完成检查
     </p>
     <h2 v-stylex="styles.title">
-      所有问题已经走完，确认后提交结果。
+      已回答完所有问题，确认后提交结果。
     </h2>
     <p v-stylex="styles.body">
-      你可以返回上一题修改答案。提交后将按当前作答内容计算量表分数。
+      你可以返回修改答案。提交后将按当前作答内容计算量表分数。
     </p>
     <div v-stylex="styles.status">
       <span>{{ answeredCount }} / {{ totalQuestions }}</span>

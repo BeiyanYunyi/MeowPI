@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import type { TestFlowItem } from '#/composables/useTestFlow'
+import type { TestFlowItem, TestFlowSnapshot } from '#/composables/useTestFlow'
 import { breakpoints } from '#/breakpoints.stylex'
 import { useTestFlow } from '#/composables/useTestFlow'
 import { colors, motion, radius, shadow, spacing, type } from '#/tokens.stylex'
-import { computed, nextTick, useTemplateRef, watch } from 'vue'
+import { computed, nextTick, shallowRef, useTemplateRef, watch } from 'vue'
 import TestCardPreview from './TestCardPreview.vue'
 import TestQuestionCard from './TestQuestionCard.vue'
 import TestReviewCard from './TestReviewCard.vue'
@@ -24,6 +24,7 @@ const currentItem = flow.currentItem
 const previousItem = flow.previousItem
 const nextItem = flow.nextItem
 const isReviewStep = flow.isReviewStep
+const clearedSnapshot = shallowRef<TestFlowSnapshot | null>(null)
 
 const styles = defineStyleX({
   shell: {
@@ -106,6 +107,12 @@ const styles = defineStyleX({
     gap: spacing.sm,
     flexWrap: 'wrap',
   },
+  auxiliaryControls: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: spacing.sm,
+    flexWrap: 'wrap',
+  },
   button: {
     'minBlockSize': '52px',
     'borderRadius': radius.pill,
@@ -131,6 +138,13 @@ const styles = defineStyleX({
     color: colors.surfaceStrong,
     border: 'none',
   },
+  quietButton: {
+    backgroundColor: colors.surfaceAccent,
+  },
+  destructiveButton: {
+    borderColor: colors.no,
+    color: colors.no,
+  },
   buttonDisabled: {
     opacity: '0.38',
     cursor: 'not-allowed',
@@ -144,6 +158,13 @@ const styles = defineStyleX({
   },
   debug: {
     justifySelf: 'start',
+  },
+  undoHint: {
+    margin: '0',
+    color: colors.textSecondary,
+    fontFamily: type.uiFamily,
+    fontSize: type.meta,
+    lineHeight: '1.5',
   },
 })
 
@@ -223,6 +244,20 @@ function handleRandomFill() {
   flow.answers.value = flow.answers.value.map(() => Math.random() > 0.5)
   flow.setCurrentIndex(flow.reviewIndex)
 }
+
+function handleClearFlow() {
+  clearedSnapshot.value = flow.createSnapshot()
+  flow.resetFlow()
+}
+
+function handleUndoClear() {
+  if (!clearedSnapshot.value) {
+    return
+  }
+
+  flow.restoreFlow(clearedSnapshot.value)
+  clearedSnapshot.value = null
+}
 </script>
 
 <template>
@@ -230,10 +265,10 @@ function handleRandomFill() {
     <div v-stylex="styles.content">
       <header v-stylex="styles.header">
         <h1 v-stylex="styles.heading">
-          MeowPI 测验
+          喵喵多项人格测试
         </h1>
         <p v-stylex="styles.subheading">
-          一次只回答一张卡片。向左或向右拖动卡片即可作答，也可以点击按钮或使用方向键。
+          向左或向右拖动卡片即可作答，也可以点击按钮或使用方向键。
         </p>
         <div v-stylex="styles.progressRow">
           <span>{{ currentStepLabel }}</span>
@@ -298,7 +333,7 @@ function handleRandomFill() {
             type="button"
             @click="flow.goPrevious"
           >
-            上一张
+            上一题
           </button>
           <button
             v-if="currentItem"
@@ -307,13 +342,32 @@ function handleRandomFill() {
             type="button"
             @click="flow.goNext"
           >
-            下一张
+            下一题
           </button>
         </div>
 
         <p v-stylex="styles.hint">
-          键盘：← 否，→ 是，↑ 上一张，↓ 下一张，Backspace 清除。
+          键盘：← 否，→ 是，↑ 上一题，↓ 下一题，⌫ 清除。
         </p>
+      </div>
+
+      <div v-stylex="styles.auxiliaryControls">
+        <button
+          v-if="!clearedSnapshot"
+          v-stylex="[styles.button, styles.quietButton, styles.destructiveButton]"
+          type="button"
+          @click="handleClearFlow"
+        >
+          清空测试进度
+        </button>
+        <button
+          v-if="clearedSnapshot"
+          v-stylex="[styles.button, styles.quietButton]"
+          type="button"
+          @click="handleUndoClear"
+        >
+          撤销
+        </button>
       </div>
 
       <button

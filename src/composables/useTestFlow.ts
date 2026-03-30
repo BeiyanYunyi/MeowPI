@@ -1,5 +1,6 @@
 import { question } from '#/data'
-import { computed, ref, shallowRef } from 'vue'
+import { useLocalStorage } from '@vueuse/core'
+import { computed } from 'vue'
 
 export interface TestFlowItem {
   id: string
@@ -11,14 +12,122 @@ export interface TestFlowItem {
   questionNumber: number | null
 }
 
-export function useTestFlow() {
-  const answers = ref<(boolean | null)[]>(question.map(() => null))
-  const assignedGender = shallowRef<boolean | null>(null)
-  const currentIndex = shallowRef(0)
+export interface TestFlowSnapshot {
+  assignedGender: boolean | null
+  answers: (boolean | null)[]
+  currentIndex: number
+}
 
+const TEST_FLOW_STORAGE_KEY = 'meow-pi:test-flow'
+
+function getStorageWindow() {
+  if (typeof window !== 'undefined') {
+    return window
+  }
+
+  if (typeof globalThis !== 'undefined' && typeof globalThis.localStorage?.getItem === 'function') {
+    const storageWindow = {
+      localStorage: globalThis.localStorage,
+      addEventListener() {},
+      removeEventListener() {},
+      dispatchEvent() {
+        return true
+      },
+    } satisfies Pick<Window, 'localStorage' | 'addEventListener' | 'removeEventListener' | 'dispatchEvent'>
+
+    return storageWindow as unknown as Window & typeof globalThis
+  }
+
+  return undefined
+}
+
+function createEmptySnapshot(): TestFlowSnapshot {
+  return {
+    assignedGender: null,
+    answers: question.map(() => null),
+    currentIndex: 0,
+  }
+}
+
+function isAnswer(value: unknown): value is boolean | null {
+  return value === true || value === false || value === null
+}
+
+function normalizeSnapshot(snapshot: unknown, reviewIndex: number): TestFlowSnapshot {
+  if (!snapshot || typeof snapshot !== 'object') {
+    return createEmptySnapshot()
+  }
+
+  const maybeSnapshot = snapshot as Partial<TestFlowSnapshot>
+
+  if (!Array.isArray(maybeSnapshot.answers) || maybeSnapshot.answers.length !== question.length) {
+    return createEmptySnapshot()
+  }
+
+  if (!isAnswer(maybeSnapshot.assignedGender) || !maybeSnapshot.answers.every(isAnswer)) {
+    return createEmptySnapshot()
+  }
+
+  const currentIndex
+    = typeof maybeSnapshot.currentIndex === 'number' && Number.isInteger(maybeSnapshot.currentIndex)
+      ? maybeSnapshot.currentIndex
+      : 0
+
+  return {
+    assignedGender: maybeSnapshot.assignedGender,
+    answers: [...maybeSnapshot.answers],
+    currentIndex: Math.min(Math.max(currentIndex, 0), reviewIndex),
+  }
+}
+
+export function useTestFlow() {
   const firstQuestionIndex = 1
   const lastQuestionIndex = question.length
   const reviewIndex = question.length + 1
+  const persistedState = useLocalStorage<TestFlowSnapshot>(TEST_FLOW_STORAGE_KEY, createEmptySnapshot(), {
+    window: getStorageWindow(),
+  })
+
+  persistedState.value = normalizeSnapshot(persistedState.value, reviewIndex)
+
+  const answers = computed({
+    get: () => persistedState.value.answers,
+    set: (value: (boolean | null)[]) => {
+      persistedState.value = normalizeSnapshot(
+        {
+          ...persistedState.value,
+          answers: value,
+        },
+        reviewIndex,
+      )
+    },
+  })
+
+  const assignedGender = computed({
+    get: () => persistedState.value.assignedGender,
+    set: (value: boolean | null) => {
+      persistedState.value = normalizeSnapshot(
+        {
+          ...persistedState.value,
+          assignedGender: value,
+        },
+        reviewIndex,
+      )
+    },
+  })
+
+  const currentIndex = computed({
+    get: () => persistedState.value.currentIndex,
+    set: (value: number) => {
+      persistedState.value = normalizeSnapshot(
+        {
+          ...persistedState.value,
+          currentIndex: value,
+        },
+        reviewIndex,
+      )
+    },
+  })
 
   const answeredQuestionCount = computed(() =>
     answers.value.reduce((count, answer) => count + (answer === null ? 0 : 1), 0),
@@ -124,6 +233,18 @@ export function useTestFlow() {
     return true
   }
 
+  function createSnapshot() {
+    return normalizeSnapshot(persistedState.value, reviewIndex)
+  }
+
+  function restoreFlow(snapshot: TestFlowSnapshot) {
+    persistedState.value = normalizeSnapshot(snapshot, reviewIndex)
+  }
+
+  function resetFlow() {
+    persistedState.value = createEmptySnapshot()
+  }
+
   return {
     answers,
     assignedGender,
@@ -142,5 +263,8 @@ export function useTestFlow() {
     canAdvanceFrom,
     goPrevious,
     goNext,
+    createSnapshot,
+    restoreFlow,
+    resetFlow,
   }
 }
