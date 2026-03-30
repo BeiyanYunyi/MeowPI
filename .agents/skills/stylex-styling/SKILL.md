@@ -56,6 +56,26 @@ const styles = stylex.create({
 });
 ```
 
+## Forbid shorthand properties
+
+Shorthand properties (e.g. `border`, `outline`) are forbidden. Always use longhand properties (`borderWidth`, `borderStyle`, `borderColor`) to make sure StyleX can handle them correctly. For example, instead of:
+
+```ts
+{
+  border: `1px solid ${colors.borderSoft}`,
+}
+```
+
+Use:
+
+```ts
+{
+  borderWidth: '1px',
+  borderStyle: 'solid',
+  borderColor: colors.borderSoft,
+}
+```
+
 ## Example usage
 
 ```vue

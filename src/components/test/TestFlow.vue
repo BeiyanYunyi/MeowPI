@@ -109,7 +109,9 @@ const styles = defineStyleX({
   button: {
     'minBlockSize': '52px',
     'borderRadius': radius.pill,
-    'border': `1px solid ${colors.borderStrong}`,
+    'borderWidth': '1px',
+    'borderStyle': 'solid',
+    'borderColor': colors.borderStrong,
     'backgroundColor': colors.surfaceStrong,
     'color': colors.textSecondary,
     'paddingBlock': spacing.sm,
@@ -118,7 +120,9 @@ const styles = defineStyleX({
     'fontSize': type.meta,
     'cursor': 'pointer',
     ':focus-visible': {
-      outline: `3px solid ${colors.focusRing}`,
+      outlineWidth: '3px',
+      outlineStyle: 'solid',
+      outlineColor: colors.focusRing,
       outlineOffset: '2px',
     },
   },
