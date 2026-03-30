@@ -8,6 +8,7 @@
 </template>
 
 <style>
-.dummy-class-for-generating-css {
+* {
+  box-sizing: border-box;
 }
 </style>
