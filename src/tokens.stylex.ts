@@ -23,6 +23,19 @@ export const colors = defineConsts({
   pendingSoft: 'rgba(177, 131, 47, 0.14)',
 })
 
+export const report = defineConsts({
+  chartSurface: '#fffdfa',
+  chartFrame: '#d9cdbb',
+  chartGuide: '#241a12',
+  chartGuideMuted: '#8d7c6f',
+  chartAxis: '#241a12',
+  chartSeparator: '#241a12',
+  chartAlert: '#cf2f1d',
+  chartProfile: '#22577a',
+  dividerSoft: '#ece3d6',
+  dividerMuted: '#f0e8dc',
+})
+
 export const spacing = defineConsts({
   xxs: '4px',
   xs: '8px',

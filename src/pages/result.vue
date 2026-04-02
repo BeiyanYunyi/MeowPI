@@ -4,6 +4,8 @@ import type {
   BaseScaleKey,
   ResultPagePayload,
 } from '#/data'
+import { breakpoints } from '#/breakpoints.stylex'
+import { colors, radius, report, shadow, size, spacing, type } from '#/tokens.stylex'
 import { decodeResultPayload } from '#/utils/resultPayload'
 import { axisBottom, axisLeft, line, range, scaleLinear, scalePoint, select } from 'd3'
 import { computed, useTemplateRef, watch } from 'vue'
@@ -95,16 +97,16 @@ const chartData = computed<ChartDatum[]>(() => {
     { key: 'L', label: 'L', value: payload.value.analyzeScoreResult.validity.L, section: 'validity' },
     { key: 'F', label: 'F', value: payload.value.analyzeScoreResult.validity.F, section: 'validity' },
     { key: 'K', label: 'K', value: payload.value.analyzeScoreResult.validity.K, section: 'validity' },
-    { key: 'Hs-1', label: 'Hs\n1', value: payload.value.analyzeScoreResult.clinical['Hs-1'], section: 'clinical' },
-    { key: 'D-2', label: 'D\n2', value: payload.value.analyzeScoreResult.clinical['D-2'], section: 'clinical' },
-    { key: 'Hy-3', label: 'Hy\n3', value: payload.value.analyzeScoreResult.clinical['Hy-3'], section: 'clinical' },
-    { key: 'Pd-4', label: 'Pd\n4', value: payload.value.analyzeScoreResult.clinical['Pd-4'], section: 'clinical' },
-    { key: 'Mf-5', label: 'Mf\n5', value: payload.value.analyzeScoreResult.clinical['Mf-5'], section: 'clinical' },
-    { key: 'Pa-6', label: 'Pa\n6', value: payload.value.analyzeScoreResult.clinical['Pa-6'], section: 'clinical' },
-    { key: 'Pt-7', label: 'Pt\n7', value: payload.value.analyzeScoreResult.clinical['Pt-7'], section: 'clinical' },
-    { key: 'Sc-8', label: 'Sc\n8', value: payload.value.analyzeScoreResult.clinical['Sc-8'], section: 'clinical' },
-    { key: 'Ma-9', label: 'Ma\n9', value: payload.value.analyzeScoreResult.clinical['Ma-9'], section: 'clinical' },
-    { key: 'Si-0', label: 'Si\n0', value: payload.value.analyzeScoreResult.clinical['Si-0'], section: 'clinical' },
+    { key: 'Hs-1', label: 'Hs', value: payload.value.analyzeScoreResult.clinical['Hs-1'], section: 'clinical' },
+    { key: 'D-2', label: 'D', value: payload.value.analyzeScoreResult.clinical['D-2'], section: 'clinical' },
+    { key: 'Hy-3', label: 'Hy', value: payload.value.analyzeScoreResult.clinical['Hy-3'], section: 'clinical' },
+    { key: 'Pd-4', label: 'Pd', value: payload.value.analyzeScoreResult.clinical['Pd-4'], section: 'clinical' },
+    { key: 'Mf-5', label: 'Mf', value: payload.value.analyzeScoreResult.clinical['Mf-5'], section: 'clinical' },
+    { key: 'Pa-6', label: 'Pa', value: payload.value.analyzeScoreResult.clinical['Pa-6'], section: 'clinical' },
+    { key: 'Pt-7', label: 'Pt', value: payload.value.analyzeScoreResult.clinical['Pt-7'], section: 'clinical' },
+    { key: 'Sc-8', label: 'Sc', value: payload.value.analyzeScoreResult.clinical['Sc-8'], section: 'clinical' },
+    { key: 'Ma-9', label: 'Ma', value: payload.value.analyzeScoreResult.clinical['Ma-9'], section: 'clinical' },
+    { key: 'Si-0', label: 'Si', value: payload.value.analyzeScoreResult.clinical['Si-0'], section: 'clinical' },
     { key: 'Mas', label: 'Mas', value: payload.value.analyzeScoreResult.extra.Mas, section: 'extra' },
     { key: 'Dy', label: 'Dy', value: payload.value.analyzeScoreResult.extra.Dy, section: 'extra' },
     { key: 'Do', label: 'Do', value: payload.value.analyzeScoreResult.extra.Do, section: 'extra' },
@@ -183,8 +185,8 @@ watch(
     root.append('rect')
       .attr('width', innerWidth)
       .attr('height', innerHeight)
-      .attr('fill', '#fffdfa')
-      .attr('stroke', '#d9cdbb')
+      .attr('fill', report.chartSurface)
+      .attr('stroke', report.chartFrame)
 
     ;[50, 60, 70].forEach((guide) => {
       root.append('line')
@@ -192,7 +194,7 @@ watch(
         .attr('x2', innerWidth)
         .attr('y1', y(guide))
         .attr('y2', y(guide))
-        .attr('stroke', guide === 60 ? '#8d6e63' : '#23201c')
+        .attr('stroke', guide === 60 ? report.chartGuideMuted : report.chartGuide)
         .attr('stroke-dasharray', guide === 60 ? '6 6' : null)
         .attr('stroke-width', guide === 70 ? 1.5 : 1)
     })
@@ -210,14 +212,14 @@ watch(
         .attr('x2', xPos + offset)
         .attr('y1', 0)
         .attr('y2', innerHeight)
-        .attr('stroke', key === 'Mf-5' ? '#c0392b' : '#23201c')
+        .attr('stroke', key === 'Mf-5' ? report.chartAlert : report.chartSeparator)
         .attr('stroke-dasharray', key === 'Mf-5' ? '6 6' : null)
     })
 
     root.append('path')
       .datum(points)
       .attr('fill', 'none')
-      .attr('stroke', '#22577a')
+      .attr('stroke', report.chartProfile)
       .attr('stroke-width', 2.5)
       .attr('d', line<ChartDatum>()
         .x((point: ChartDatum) => x(point.key) ?? 0)
@@ -230,7 +232,7 @@ watch(
       .attr('cx', (point: ChartDatum) => x(point.key) ?? 0)
       .attr('cy', (point: ChartDatum) => y(point.value))
       .attr('r', 4.5)
-      .attr('fill', '#22577a')
+      .attr('fill', report.chartProfile)
 
     root.selectAll('circle.highlight')
       .data(highlights)
@@ -239,7 +241,7 @@ watch(
       .attr('cx', (point: { key: string, value: number }) => x(point.key) ?? 0)
       .attr('cy', (point: { key: string, value: number }) => y(point.value))
       .attr('r', 6)
-      .attr('fill', '#cf2f1d')
+      .attr('fill', report.chartAlert)
 
     root.selectAll('text.highlight-label')
       .data(highlights)
@@ -247,23 +249,23 @@ watch(
       .attr('class', 'highlight-label')
       .attr('x', (point: { key: string, value: number }) => (x(point.key) ?? 0) + 8)
       .attr('y', (point: { key: string, value: number }) => y(point.value) - 10)
-      .attr('fill', '#cf2f1d')
+      .attr('fill', report.chartAlert)
       .attr('font-size', 12)
       .attr('font-weight', 600)
       .text((point: { label: string }) => point.label)
 
     root.append('g')
       .call(axisLeft(y).tickValues(range(0, 121, 10)))
-      .call((axis: any) => axis.select('.domain').attr('stroke', '#23201c'))
-      .call((axis: any) => axis.selectAll('.tick line').attr('stroke', '#d9cdbb'))
+      .call((axis: any) => axis.select('.domain').attr('stroke', report.chartAxis))
+      .call((axis: any) => axis.selectAll('.tick line').attr('stroke', report.chartFrame))
 
     const xAxis = root.append('g')
       .attr('transform', `translate(0, ${innerHeight})`)
       .call(axisBottom(x).tickSize(0))
 
-    xAxis.select('.domain').attr('stroke', '#23201c')
+    xAxis.select('.domain').attr('stroke', report.chartAxis)
     xAxis.selectAll('.tick text')
-      .attr('fill', '#23201c')
+      .attr('fill', report.chartAxis)
       .attr('font-size', 12)
       .each(function renderLabel(this, pointKey) {
         const label = points.find(point => point.key === pointKey)?.label ?? String(pointKey)
@@ -283,103 +285,126 @@ watch(
 
 const styles = defineStyleX({
   page: {
-    minHeight: '100vh',
-    backgroundColor: '#f6f1e8',
-    color: '#23201c',
-    paddingBlock: '24px 48px',
-    paddingInline: '20px',
+    minBlockSize: '100vh',
+    backgroundColor: colors.pageBg,
+    backgroundImage: `radial-gradient(circle at top, ${colors.pageGlow}, transparent 40%)`,
+    color: colors.textPrimary,
+    paddingBlock: {
+      default: spacing.lg,
+      [breakpoints.md]: spacing.xxl,
+    },
+    paddingInline: {
+      default: spacing.md,
+      [breakpoints.md]: spacing.xxl,
+    },
   },
   shell: {
-    maxWidth: '1120px',
+    maxInlineSize: size.contentMax,
     marginInline: 'auto',
     display: 'flex',
     flexDirection: 'column',
-    gap: '24px',
+    gap: spacing.lg,
   },
   hero: {
     display: 'flex',
     flexWrap: 'wrap',
     justifyContent: 'space-between',
-    gap: '16px',
+    gap: spacing.md,
     alignItems: 'end',
   },
   eyebrow: {
     margin: 0,
-    fontSize: '13px',
+    color: colors.textMuted,
+    fontFamily: type.uiFamily,
+    fontSize: type.eyebrow,
     letterSpacing: '0.08em',
     textTransform: 'uppercase',
-    color: '#7b6752',
   },
   title: {
-    marginBlockStart: '6px',
+    marginBlockStart: spacing.xs,
     marginBlockEnd: 0,
     marginInline: 0,
-    fontSize: 'clamp(28px, 4vw, 44px)',
+    color: colors.textPrimary,
+    fontFamily: type.readingFamily,
+    fontSize: type.title,
     lineHeight: 1.1,
   },
   summaryCard: {
-    minWidth: '220px',
+    minInlineSize: '220px',
     borderWidth: '1px',
     borderStyle: 'solid',
-    borderColor: '#d9cdbb',
-    borderRadius: '18px',
-    paddingBlock: '16px',
-    paddingInline: '18px',
-    backgroundColor: '#fffdfa',
+    borderColor: colors.borderSoft,
+    borderRadius: radius.sm,
+    backgroundColor: colors.surfaceStrong,
+    boxShadow: shadow.soft,
+    paddingBlock: spacing.md,
+    paddingInline: spacing.md,
   },
   summaryLabel: {
     margin: 0,
-    fontSize: '13px',
-    color: '#7b6752',
+    color: colors.textMuted,
+    fontFamily: type.uiFamily,
+    fontSize: type.eyebrow,
     textTransform: 'uppercase',
     letterSpacing: '0.08em',
   },
   summaryValue: {
-    marginBlockStart: '6px',
+    marginBlockStart: spacing.xs,
     marginBlockEnd: 0,
     marginInline: 0,
+    color: colors.textPrimary,
+    fontFamily: type.readingFamily,
     fontSize: '36px',
     fontWeight: 700,
+    lineHeight: '1',
   },
   card: {
     borderWidth: '1px',
     borderStyle: 'solid',
-    borderColor: '#d9cdbb',
-    borderRadius: '24px',
-    backgroundColor: '#fffdfa',
-    boxShadow: '0 18px 36px rgba(35, 32, 28, 0.08)',
+    borderColor: colors.borderSoft,
+    borderRadius: radius.md,
+    backgroundColor: colors.surfaceStrong,
+    boxShadow: shadow.soft,
     overflow: 'hidden',
   },
   cardHeader: {
-    paddingBlock: '18px 0',
-    paddingInline: '20px',
+    paddingBlockStart: spacing.md,
+    paddingBlockEnd: 0,
+    paddingInline: spacing.md,
     borderBlockEndWidth: '1px',
     borderBlockEndStyle: 'solid',
-    borderBlockEndColor: '#ece3d6',
+    borderBlockEndColor: report.dividerSoft,
   },
   cardTitle: {
-    margin: 0,
+    marginBlockStart: 0,
+    marginBlockEnd: spacing.md,
+    marginInline: 0,
+    color: colors.textPrimary,
+    fontFamily: type.readingFamily,
     fontSize: '20px',
+    lineHeight: '1.2',
   },
   cardBody: {
-    paddingBlockStart: '20px',
-    paddingBlockEnd: '24px',
-    paddingInline: '20px',
+    paddingBlockStart: spacing.md,
+    paddingBlockEnd: spacing.lg,
+    paddingInline: spacing.md,
   },
   chartWrap: {
     overflowX: 'auto',
   },
   chart: {
     width: '100%',
-    minWidth: '860px',
+    minInlineSize: '860px',
     display: 'block',
   },
   note: {
-    marginBlockStart: '12px',
+    marginBlockStart: spacing.sm,
     marginBlockEnd: 0,
     marginInline: 0,
-    color: '#7b6752',
-    fontSize: '14px',
+    color: colors.textSecondary,
+    fontFamily: type.uiFamily,
+    fontSize: type.meta,
+    lineHeight: '1.5',
   },
   tableWrap: {
     overflowX: 'auto',
@@ -391,37 +416,51 @@ const styles = defineStyleX({
   },
   th: {
     textAlign: 'left',
-    fontSize: '14px',
-    color: '#7b6752',
-    paddingBlock: '12px',
+    color: colors.textSecondary,
+    fontFamily: type.uiFamily,
+    fontSize: type.meta,
+    fontWeight: 600,
+    paddingBlock: spacing.sm,
     borderBlockEndWidth: '1px',
     borderBlockEndStyle: 'solid',
-    borderBlockEndColor: '#ece3d6',
+    borderBlockEndColor: report.dividerSoft,
   },
   td: {
-    paddingBlock: '12px',
+    color: colors.textPrimary,
+    fontFamily: type.uiFamily,
+    fontSize: type.meta,
+    paddingBlock: spacing.sm,
     borderBlockEndWidth: '1px',
     borderBlockEndStyle: 'solid',
-    borderBlockEndColor: '#f0e8dc',
+    borderBlockEndColor: report.dividerMuted,
     fontVariantNumeric: 'tabular-nums',
   },
   empty: {
     borderWidth: '1px',
     borderStyle: 'solid',
-    borderColor: '#d9cdbb',
-    borderRadius: '24px',
-    backgroundColor: '#fffdfa',
-    padding: '28px',
+    borderColor: colors.borderSoft,
+    borderRadius: radius.md,
+    backgroundColor: colors.surfaceStrong,
+    boxShadow: shadow.soft,
+    padding: spacing.lg,
   },
   emptyTitle: {
-    margin: 0,
+    marginBlockStart: 0,
+    marginBlockEnd: spacing.sm,
+    marginInline: 0,
+    color: colors.textPrimary,
+    fontFamily: type.readingFamily,
     fontSize: '24px',
+    lineHeight: '1.2',
   },
   emptyText: {
-    marginBlockStart: '8px',
+    marginBlockStart: 0,
     marginBlockEnd: 0,
     marginInline: 0,
-    color: '#7b6752',
+    color: colors.textSecondary,
+    fontFamily: type.uiFamily,
+    fontSize: type.body,
+    lineHeight: '1.6',
   },
 })
 </script>
