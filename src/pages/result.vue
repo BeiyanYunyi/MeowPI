@@ -6,6 +6,7 @@ import type {
 } from '#/data'
 import { breakpoints } from '#/breakpoints.stylex'
 import { colors, radius, report, shadow, size, spacing, type } from '#/tokens.stylex'
+import { Gender } from '#/utils/gender'
 import { decodeResultPayload } from '#/utils/resultPayload'
 import { axisBottom, axisLeft, line, range, scaleLinear, scalePoint, select } from 'd3'
 import { computed, useTemplateRef, watch } from 'vue'
@@ -24,6 +25,27 @@ interface TableRow {
   standardScore: number
   correctedScore: number | null
 }
+
+const SCALE_LABELS = {
+  'Q*': '疑问分 Q*',
+  'L': '谎分 L',
+  'F': '诈病分数 F',
+  'K': '校正分数 K',
+  'Hs': '疑病 Hs',
+  'D': '抑郁 D',
+  'Hy': '癔病 Hy',
+  'Pd': '精神病态 Pd',
+  'Pa': '妄想狂 Pa',
+  'Pt': '精神衰弱 Pt',
+  'Sc': '精神分裂症 Sc',
+  'Ma': '轻躁狂 Ma',
+  'Si': '社会内向性 Si',
+  'Mas': '外显性焦虑 Mas',
+  'Dy': '依赖性 Dy',
+  'Do': '支配性 Do',
+  'Re': '社会责任感 Re',
+  'Cn': '控制 Cn',
+} as const
 
 const BASE_SCALE_ORDER = [
   'Q*',
@@ -74,19 +96,27 @@ const chartRef = useTemplateRef<SVGSVGElement>('chart')
 const parsedResult = computed(() => {
   const data = route.query.data
   if (typeof data !== 'string') {
-    return { payload: null, error: 'No result payload was provided.' }
+    return { payload: null, error: '未提供测验结果数据。' }
   }
 
   try {
     return { payload: decodeResultPayload(data), error: '' }
   }
   catch {
-    return { payload: null, error: 'The result payload is invalid or could not be decoded.' }
+    return { payload: null, error: '测验结果数据无效，或无法完成解析。' }
   }
 })
 
 const payload = computed(() => parsedResult.value.payload)
 const errorMessage = computed(() => parsedResult.value.error)
+
+function getScaleLabel(key: BaseScaleKey) {
+  if (key === 'Mf') {
+    return payload.value?.gender === Gender.MALE ? '女子气 Mf' : '男子气 Mf'
+  }
+
+  return SCALE_LABELS[key]
+}
 
 const chartData = computed<ChartDatum[]>(() => {
   if (!payload.value) {
@@ -94,24 +124,24 @@ const chartData = computed<ChartDatum[]>(() => {
   }
 
   return [
-    { key: 'L', label: 'L', value: payload.value.analyzeScoreResult.validity.L, section: 'validity' },
-    { key: 'F', label: 'F', value: payload.value.analyzeScoreResult.validity.F, section: 'validity' },
-    { key: 'K', label: 'K', value: payload.value.analyzeScoreResult.validity.K, section: 'validity' },
-    { key: 'Hs-1', label: 'Hs', value: payload.value.analyzeScoreResult.clinical['Hs-1'], section: 'clinical' },
-    { key: 'D-2', label: 'D', value: payload.value.analyzeScoreResult.clinical['D-2'], section: 'clinical' },
-    { key: 'Hy-3', label: 'Hy', value: payload.value.analyzeScoreResult.clinical['Hy-3'], section: 'clinical' },
-    { key: 'Pd-4', label: 'Pd', value: payload.value.analyzeScoreResult.clinical['Pd-4'], section: 'clinical' },
-    { key: 'Mf-5', label: 'Mf', value: payload.value.analyzeScoreResult.clinical['Mf-5'], section: 'clinical' },
-    { key: 'Pa-6', label: 'Pa', value: payload.value.analyzeScoreResult.clinical['Pa-6'], section: 'clinical' },
-    { key: 'Pt-7', label: 'Pt', value: payload.value.analyzeScoreResult.clinical['Pt-7'], section: 'clinical' },
-    { key: 'Sc-8', label: 'Sc', value: payload.value.analyzeScoreResult.clinical['Sc-8'], section: 'clinical' },
-    { key: 'Ma-9', label: 'Ma', value: payload.value.analyzeScoreResult.clinical['Ma-9'], section: 'clinical' },
-    { key: 'Si-0', label: 'Si', value: payload.value.analyzeScoreResult.clinical['Si-0'], section: 'clinical' },
-    { key: 'Mas', label: 'Mas', value: payload.value.analyzeScoreResult.extra.Mas, section: 'extra' },
-    { key: 'Dy', label: 'Dy', value: payload.value.analyzeScoreResult.extra.Dy, section: 'extra' },
-    { key: 'Do', label: 'Do', value: payload.value.analyzeScoreResult.extra.Do, section: 'extra' },
-    { key: 'Re', label: 'Re', value: payload.value.analyzeScoreResult.extra.Re, section: 'extra' },
-    { key: 'Cn', label: 'Cn', value: payload.value.analyzeScoreResult.extra.Cn, section: 'extra' },
+    { key: 'L', label: getScaleLabel('L'), value: payload.value.analyzeScoreResult.validity.L, section: 'validity' },
+    { key: 'F', label: getScaleLabel('F'), value: payload.value.analyzeScoreResult.validity.F, section: 'validity' },
+    { key: 'K', label: getScaleLabel('K'), value: payload.value.analyzeScoreResult.validity.K, section: 'validity' },
+    { key: 'Hs-1', label: getScaleLabel('Hs'), value: payload.value.analyzeScoreResult.clinical['Hs-1'], section: 'clinical' },
+    { key: 'D-2', label: getScaleLabel('D'), value: payload.value.analyzeScoreResult.clinical['D-2'], section: 'clinical' },
+    { key: 'Hy-3', label: getScaleLabel('Hy'), value: payload.value.analyzeScoreResult.clinical['Hy-3'], section: 'clinical' },
+    { key: 'Pd-4', label: getScaleLabel('Pd'), value: payload.value.analyzeScoreResult.clinical['Pd-4'], section: 'clinical' },
+    { key: 'Mf-5', label: getScaleLabel('Mf'), value: payload.value.analyzeScoreResult.clinical['Mf-5'], section: 'clinical' },
+    { key: 'Pa-6', label: getScaleLabel('Pa'), value: payload.value.analyzeScoreResult.clinical['Pa-6'], section: 'clinical' },
+    { key: 'Pt-7', label: getScaleLabel('Pt'), value: payload.value.analyzeScoreResult.clinical['Pt-7'], section: 'clinical' },
+    { key: 'Sc-8', label: getScaleLabel('Sc'), value: payload.value.analyzeScoreResult.clinical['Sc-8'], section: 'clinical' },
+    { key: 'Ma-9', label: getScaleLabel('Ma'), value: payload.value.analyzeScoreResult.clinical['Ma-9'], section: 'clinical' },
+    { key: 'Si-0', label: getScaleLabel('Si'), value: payload.value.analyzeScoreResult.clinical['Si-0'], section: 'clinical' },
+    { key: 'Mas', label: getScaleLabel('Mas'), value: payload.value.analyzeScoreResult.extra.Mas, section: 'extra' },
+    { key: 'Dy', label: getScaleLabel('Dy'), value: payload.value.analyzeScoreResult.extra.Dy, section: 'extra' },
+    { key: 'Do', label: getScaleLabel('Do'), value: payload.value.analyzeScoreResult.extra.Do, section: 'extra' },
+    { key: 'Re', label: getScaleLabel('Re'), value: payload.value.analyzeScoreResult.extra.Re, section: 'extra' },
+    { key: 'Cn', label: getScaleLabel('Cn'), value: payload.value.analyzeScoreResult.extra.Cn, section: 'extra' },
   ]
 })
 
@@ -171,7 +201,7 @@ watch(
     svg
       .attr('viewBox', `0 0 ${width} ${height}`)
       .attr('role', 'img')
-      .attr('aria-label', 'MMPI profile chart')
+      .attr('aria-label', 'MeowPI 折线图')
 
     const root = svg.append('g').attr('transform', `translate(${margin.left}, ${margin.top})`)
     const x = scalePoint()
@@ -267,17 +297,15 @@ watch(
     xAxis.selectAll('.tick text')
       .attr('fill', report.chartAxis)
       .attr('font-size', 12)
+      .attr('text-anchor', 'end')
+      .attr('dx', '-0.45em')
+      .attr('dy', '0.35em')
+      .attr('transform', 'rotate(-38)')
       .each(function renderLabel(this, pointKey) {
         const label = points.find(point => point.key === pointKey)?.label ?? String(pointKey)
         const text = select(this)
-        const segments = label.split('\n')
         text.text('')
-        segments.forEach((segment, index) => {
-          text.append('tspan')
-            .attr('x', 0)
-            .attr('dy', index === 0 ? '0.8em' : '1.1em')
-            .text(segment)
-        })
+        text.text(label)
       })
   },
   { immediate: true },
@@ -472,15 +500,15 @@ const styles = defineStyleX({
         <header v-stylex="styles.hero">
           <div>
             <p v-stylex="styles.eyebrow">
-              MMPI result profile
+              MeowPI 结果
             </p>
             <h1 v-stylex="styles.title">
-              Result overview
+              结果概览
             </h1>
           </div>
           <div v-stylex="styles.summaryCard">
             <p v-stylex="styles.summaryLabel">
-              Two-point code
+              两点编码
             </p>
             <p v-stylex="styles.summaryValue">
               {{ payload.analyzeScoreResult.twoPoint }}
@@ -491,7 +519,7 @@ const styles = defineStyleX({
         <section v-stylex="styles.card">
           <div v-stylex="styles.cardHeader">
             <h2 v-stylex="styles.cardTitle">
-              Profile chart
+              折线图
             </h2>
           </div>
           <div v-stylex="styles.cardBody">
@@ -499,7 +527,7 @@ const styles = defineStyleX({
               <svg ref="chart" v-stylex="styles.chart" />
             </div>
             <p v-stylex="styles.note">
-              Clinical scores use the K-corrected profile where applicable, following the Python reference chart.
+              绘图时采用 K 校正后的分数。
             </p>
           </div>
         </section>
@@ -507,7 +535,7 @@ const styles = defineStyleX({
         <section v-stylex="styles.card">
           <div v-stylex="styles.cardHeader">
             <h2 v-stylex="styles.cardTitle">
-              Score table
+              分数表
             </h2>
           </div>
           <div v-stylex="styles.cardBody">
@@ -516,23 +544,23 @@ const styles = defineStyleX({
                 <thead>
                   <tr>
                     <th v-stylex="styles.th" scope="col">
-                      Scale
+                      量表
                     </th>
                     <th v-stylex="styles.th" scope="col">
-                      Raw score
+                      原始分
                     </th>
                     <th v-stylex="styles.th" scope="col">
-                      Standard score
+                      标准分
                     </th>
                     <th v-stylex="styles.th" scope="col">
-                      K-corrected score
+                      K 校正分
                     </th>
                   </tr>
                 </thead>
                 <tbody>
                   <tr v-for="row in tableRows" :key="row.key">
                     <td v-stylex="styles.td">
-                      {{ row.key }}
+                      {{ getScaleLabel(row.key) }}
                     </td>
                     <td v-stylex="styles.td">
                       {{ row.rawScore }}
@@ -553,7 +581,7 @@ const styles = defineStyleX({
 
       <section v-else v-stylex="styles.empty">
         <h1 v-stylex="styles.emptyTitle">
-          Result unavailable
+          无法显示结果
         </h1>
         <p v-stylex="styles.emptyText">
           {{ errorMessage }}

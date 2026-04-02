@@ -11,4 +11,7 @@
 * {
   box-sizing: border-box;
 }
+body {
+  text-autospace: normal;
+}
 </style>

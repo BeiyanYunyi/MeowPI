@@ -27,9 +27,3 @@ Prefer Vue SFCs for UI and TypeScript modules for data/utilities. Name Vue compo
 ## Testing Guidelines
 
 Automated tests now live under the top-level `tests/` directory using `*.test.ts` naming. Even with test coverage in place, treat `pnpm build` as the required smoke test before submitting changes. Document the checks you ran in your PR.
-
-## Commit & Pull Request Guidelines
-
-History shows conventional commit prefixes such as `feat:`, `docs:`, and `chore:`; some commits also include gitmoji (for example `feat: :sparkles: add questions`). Follow that pattern. Commit hooks run `lint-staged` on pre-commit and `commitlint` on commit messages.
-
-PRs should include a short description, the reason for the change, any relevant issue link, and screenshots or short recordings for UI changes. Call out config changes and any new manual verification steps explicitly.
