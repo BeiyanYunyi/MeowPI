@@ -97,13 +97,7 @@ const styles = defineStyleX({
   },
   controls: {
     display: 'flex',
-    justifyContent: 'space-between',
     alignItems: 'center',
-    gap: spacing.md,
-    flexWrap: 'wrap',
-  },
-  controlGroup: {
-    display: 'flex',
     gap: spacing.sm,
     flexWrap: 'wrap',
   },
@@ -195,6 +189,15 @@ function getStepLabel(item: TestFlowItem | null) {
 
 function handleAnswer(value: boolean) {
   flow.confirmCurrentAnswer(value)
+}
+
+function handlePreviewNavigate(position: 'previous' | 'next') {
+  if (position === 'previous') {
+    flow.goPrevious()
+    return
+  }
+
+  flow.goNext()
 }
 
 function handleKeydown(event: KeyboardEvent) {
@@ -293,6 +296,7 @@ function handleUndoClear() {
           :prompt="previousItem.prompt"
           :step-label="getStepLabel(previousItem)"
           position="previous"
+          @navigate="handlePreviewNavigate"
         />
 
         <TestQuestionCard
@@ -317,37 +321,19 @@ function handleUndoClear() {
         <TestCardPreview
           v-if="nextItem"
           :answer="nextItem.answer"
+          :disabled="!canMoveNext"
           :negative-label="nextItem.negativeLabel"
           :positive-label="nextItem.positiveLabel"
           :prompt="nextItem.prompt"
           :step-label="getStepLabel(nextItem)"
           position="next"
+          @navigate="handlePreviewNavigate"
         />
       </div>
 
       <div v-stylex="styles.controls">
-        <div v-stylex="styles.controlGroup">
-          <button
-            v-stylex="[styles.button, currentIndex === 0 && styles.buttonDisabled]"
-            :disabled="currentIndex === 0"
-            type="button"
-            @click="flow.goPrevious"
-          >
-            上一题
-          </button>
-          <button
-            v-if="currentItem"
-            v-stylex="[styles.button, styles.primaryButton, !canMoveNext && styles.buttonDisabled]"
-            :disabled="!canMoveNext"
-            type="button"
-            @click="flow.goNext"
-          >
-            下一题
-          </button>
-        </div>
-
         <p v-stylex="styles.hint">
-          键盘：← 否，→ 是，↑ 上一题，↓ 下一题，⌫ 清除。
+          点击上下题卡片可切换题目。键盘：← 否，→ 是，↑ 上一题，↓ 下一题，⌫ 清除。
         </p>
       </div>
 

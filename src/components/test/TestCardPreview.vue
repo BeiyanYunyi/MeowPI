@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { colors, opacity, radius, shadow, spacing, type } from '#/tokens.stylex'
+import { colors, motion, opacity, radius, shadow, spacing, type } from '#/tokens.stylex'
 
 defineProps<{
   answer: boolean | null
@@ -8,6 +8,11 @@ defineProps<{
   position: 'previous' | 'next'
   negativeLabel: string
   positiveLabel: string
+  disabled?: boolean
+}>()
+
+const emit = defineEmits<{
+  navigate: [position: 'previous' | 'next']
 }>()
 
 const styles = defineStyleX({
@@ -28,6 +33,27 @@ const styles = defineStyleX({
     transitionDuration: '280ms',
     transitionTimingFunction: 'cubic-bezier(0.22, 1, 0.36, 1)',
     backdropFilter: 'blur(6px)',
+    textAlign: 'start',
+  },
+  button: {
+    'cursor': 'pointer',
+    'transitionProperty': 'transform, opacity, box-shadow',
+    'transitionDuration': motion.fast,
+    'transitionTimingFunction': motion.standard,
+    ':hover': {
+      transform: 'translateY(-2px)',
+      boxShadow: shadow.soft,
+    },
+    ':focus-visible': {
+      outlineWidth: '3px',
+      outlineStyle: 'solid',
+      outlineColor: colors.focusRing,
+      outlineOffset: '2px',
+    },
+  },
+  buttonDisabled: {
+    cursor: 'not-allowed',
+    opacity: '0.3',
   },
   meta: {
     display: 'flex',
@@ -60,13 +86,25 @@ const styles = defineStyleX({
     backgroundColor: colors.surfaceAccent,
     color: colors.textSecondary,
   },
+  direction: {
+    marginBlockStart: spacing.sm,
+    marginBlockEnd: 0,
+    marginInline: 0,
+    color: colors.textMuted,
+    fontFamily: type.uiFamily,
+    fontSize: type.meta,
+    lineHeight: '1.5',
+  },
 })
 </script>
 
 <template>
-  <article
-    v-stylex="styles.card"
-    :aria-hidden="true"
+  <button
+    v-stylex="[styles.card, styles.button, disabled && styles.buttonDisabled]"
+    :aria-label="`${position === 'previous' ? '跳转到上一题' : '跳转到下一题'}：${stepLabel}`"
+    :disabled="disabled"
+    type="button"
+    @click="emit('navigate', position)"
   >
     <div v-stylex="styles.meta">
       <span>{{ stepLabel }}</span>
@@ -77,5 +115,8 @@ const styles = defineStyleX({
     <p v-stylex="styles.prompt">
       {{ prompt }}
     </p>
-  </article>
+    <p v-stylex="styles.direction">
+      {{ position === 'previous' ? '点击返回上一题' : '点击前往下一题' }}
+    </p>
+  </button>
 </template>
