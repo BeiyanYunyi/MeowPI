@@ -17,43 +17,45 @@ const emit = defineEmits<{
 
 const styles = defineStyleX({
   card: {
-    inlineSize: '100%',
-    marginInline: spacing.md,
-    maxInlineSize: '720px',
-    borderRadius: radius.md,
-    borderWidth: '1px',
-    borderStyle: 'solid',
-    borderColor: colors.borderSoft,
-    backgroundColor: colors.surfaceMuted,
-    boxShadow: shadow.soft,
-    paddingBlock: spacing.lg,
-    paddingInline: spacing.lg,
-    opacity: opacity.preview,
-    transitionProperty: 'transform, opacity',
-    transitionDuration: '280ms',
-    transitionTimingFunction: 'cubic-bezier(0.22, 1, 0.36, 1)',
-    backdropFilter: 'blur(6px)',
-    textAlign: 'start',
-  },
-  button: {
-    'cursor': 'pointer',
-    'transitionProperty': 'transform, opacity, box-shadow',
-    'transitionDuration': motion.fast,
+    'inlineSize': '100%',
+    'marginInline': spacing.md,
+    'maxInlineSize': '720px',
+    'borderRadius': radius.md,
+    'borderWidth': '1px',
+    'borderStyle': 'solid',
+    'borderColor': colors.borderSoft,
+    'backgroundColor': colors.surfaceMuted,
+    'boxShadow': shadow.soft,
+    'paddingBlock': spacing.lg,
+    'paddingInline': spacing.lg,
+    'opacity': opacity.preview,
+    'transitionProperty': 'transform, opacity, background-color, border-color, box-shadow',
+    'transitionDuration': motion.medium,
     'transitionTimingFunction': motion.standard,
-    ':hover': {
+    'backdropFilter': 'blur(6px)',
+    'textAlign': 'start',
+    'cursor': 'pointer',
+    ':hover:not(:disabled)': {
       transform: 'translateY(-2px)',
-      boxShadow: shadow.soft,
+      backgroundColor: colors.surfaceStrong,
+      borderColor: colors.borderStrong,
+      boxShadow: shadow.strong,
+      opacity: '1',
     },
     ':focus-visible': {
+      backgroundColor: colors.surfaceStrong,
+      borderColor: colors.borderStrong,
+      boxShadow: shadow.strong,
+      opacity: '1',
       outlineWidth: '3px',
       outlineStyle: 'solid',
       outlineColor: colors.focusRing,
       outlineOffset: '2px',
     },
-  },
-  buttonDisabled: {
-    cursor: 'not-allowed',
-    opacity: '0.3',
+    ':disabled': {
+      cursor: 'not-allowed',
+      opacity: opacity.disabled,
+    },
   },
   meta: {
     display: 'flex',
@@ -100,7 +102,7 @@ const styles = defineStyleX({
 
 <template>
   <button
-    v-stylex="[styles.card, styles.button, disabled && styles.buttonDisabled]"
+    v-stylex="styles.card"
     :aria-label="`${position === 'previous' ? '跳转到上一题' : '跳转到下一题'}：${stepLabel}`"
     :disabled="disabled"
     type="button"
