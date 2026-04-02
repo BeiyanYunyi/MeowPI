@@ -13,7 +13,11 @@ import AppFooter from '#/components/AppFooter.vue'
 * {
   box-sizing: border-box;
 }
+:root {
+  overflow-x: clip;
+}
 body {
   text-autospace: normal;
+  overflow-x: clip;
 }
 </style>
